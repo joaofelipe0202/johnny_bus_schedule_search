@@ -1,7 +1,8 @@
 const { src, dest, series, parallel } = require('gulp');
 const postcss = require('gulp-postcss');
 const cssnano = require('cssnano');
-const concat = require('gulp-concat')
+const concat = require('gulp-concat');
+const terser = require('gulp-terser');
 
 // html tasks
 function htmlTask() {
@@ -12,6 +13,7 @@ function htmlTask() {
 //script tasks
 function scriptTask() {
   return src('src/js/*.js')
+  .pipe(terser())
   .pipe(concat('all.js'))
   .pipe(dest('dist/js'));
 }
