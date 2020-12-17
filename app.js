@@ -54,6 +54,15 @@ const returnStreetName = streetNameList => {
   }
 }
 
+const nextBusTime = time => {
+  const nextBus = new Date(time);
+  return nextBus.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+function formatTime(time) {
+  return new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
 const showSchedules = busScheduleList => {
   busScheduleList.forEach(stop => {
     stop['route-schedules'].forEach(route => {
@@ -64,7 +73,7 @@ const showSchedules = busScheduleList => {
           <td>${stop.stop['cross-street'].name}</td>
           <td>${stop.stop.direction}</td>
           <td>${route.route.number}</td>
-          <td>02:25 PM</td>
+          <td>${nextBusTime(time.times.arrival.estimated)}</td>
         </tr>`);
       });
     });
@@ -82,7 +91,6 @@ searchForm.addEventListener('submit', e => {
 
   getStreets(searchValue)
     .then(street => returnStreetName(street.streets));
-  search.innerHTML = '';
   streets.innerHTML = '';
 })
 
