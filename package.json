@@ -1,0 +1,26 @@
+{
+  "name": "johnny-assignment1",
+  "version": "1.0.0",
+  "description": "assignment #1",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaofelipe0202/johnny-assignment1.git"
+  },
+  "author": "Johnny",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joaofelipe0202/johnny-assignment1/issues"
+  },
+  "homepage": "https://github.com/joaofelipe0202/johnny-assignment1#readme",
+  "devDependencies": {
+    "cssnano": "^4.1.10",
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-postcss": "^9.0.0",
+    "postcss": "^8.2.1"
+  }
+}
