@@ -1,5 +1,6 @@
 const streets = document.querySelector('.streets');
 const info = document.querySelector('tbody'); 
+const titleBarName = document.querySelector('.titlebar');
 
 const getStreets = streetName => {
   return fetch(`https://api.winnipegtransit.com/v3/streets.json?api-key=cmZaYN5yrwwmepOUIVTd&name=${streetName}`)
@@ -9,67 +10,42 @@ const getStreets = streetName => {
 const getBusStop = streetKey => {
   return fetch(`https://api.winnipegtransit.com/v3/stops.json?api-key=cmZaYN5yrwwmepOUIVTd&street=${streetKey}`)
   .then(response => response.json())
-}
-
-const getBuses = busStop => {
-  const allBuses = [];
-
-  busStop.forEach(stopKey => {
-    allBuses.push(fetch(`https://api.winnipegtransit.com/v3/stops/${stopKey}/schedule.json?api-key=cmZaYN5yrwwmepOUIVTd`))
-  })
-
-  console.log(allBuses);
-}
-
-const getStreetsData = streetName => {
-  getStreets(streetName).then(allStreetName => {
-    const streetKey = allStreetName.streets[0].key
-    console.log(streetKey);
-
-    return streetKey;
-  })
-}
-
-const getStopData = key => {
-  getBusStop(key).then(allStops => {
-    let allBusStop = [];
+  .then(allStops => {
+    let allStopSchedule = [];
 
     allStops.stops.forEach(stop => {
-      allBusStop.push(stop.key);
-    });
-    console.log(allBusStop)
-    return allBusStop;
+      const busScheduleURL = `https://api.winnipegtransit.com/v3/stops/${stop.key}/schedule.json?api-key=cmZaYN5yrwwmepOUIVTd`
+      allStopSchedule.push(fetch(busScheduleURL));
+    })
   })
 }
 
-//getStopData('2715')
-getBuses('10003')
+function getBusStopData(streetKey) {
+  return fetch(`https://api.winnipegtransit.com/v3/stops.json?api-key=cmZaYN5yrwwmepOUIVTd&street=${streetKey}`)
+    .then(response => response.json())
+    .then(allStops => {
+      const allBusStops = [];
 
+      allStops.stops.forEach(stop => {
+        allBusStops.push(
+          fetch(`https://api.winnipegtransit.com/v3/stops/${stop.key}/schedule.json?api-key=cmZaYN5yrwwmepOUIVTd`)
+            .then(schedule => {
+              console.log(schedule[`stop-schedule`]);
+            })
+        );
+      })
+    })
+}
 
-
-
-
-
-//getStreetsData('Kenaston');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const returnStreetName = streetName => {
-  streetName.forEach(street => {
-    streets.insertAdjacentHTML('afterbegin', `<a href="#" data-street-key="${street.key}">${street.name}</a>`)
-  })
+const returnStreetName = streetNameList => {
+  
+  if (streetNameList.length === 0) {
+    streets.innerHTML = `No Streets found`;
+  } else {
+    streetNameList.forEach(street => {
+      streets.insertAdjacentHTML('afterbegin', `<a href="#" data-street-key="${street.key}">${street.name}</a>`)
+    })
+  }
 }
 
 const search = document.querySelector('input')
