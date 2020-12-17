@@ -90,18 +90,18 @@ const searchForm = document.querySelector('aside')
 
 searchForm.addEventListener('submit', e => {
   let searchValue = search.value;
-  e.preventDefault();
 
   console.log(searchValue);
 
   getStreets(searchValue)
     .then(street => returnStreetName(street.streets));
-  search.innerHTML = '';
+  search.value = '';
   streets.innerHTML = '';
+  e.preventDefault();
 })
 
 streets.addEventListener('click', e => {
-  if (e.target.tagName === 'A') {
+  if (e.target.nodeName === 'A') {
     info.innerHTML = '';
     getBusStopInfo(e.target.dataset.streetKey);
   }
