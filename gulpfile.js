@@ -1,6 +1,7 @@
 const { src, dest, series, parallel } = require('gulp');
 const postcss = require('gulp-postcss');
 const cssnano = require('cssnano');
+const concat = require('gulp-concat')
 
 // html tasks
 function htmlTask() {
@@ -11,12 +12,14 @@ function htmlTask() {
 //script tasks
 function scriptTask() {
   return src('src/js/*.js')
+  .pipe(concat('all.js'))
   .pipe(dest('dist/js'));
 }
 
 //style tasks
 function styleTask() {
   return src('src/css/*.css')
+  .pipe(concat('all.css'))
   .pipe(postcss([cssnano()]))
   .pipe(dest('dist/css'));
 }
