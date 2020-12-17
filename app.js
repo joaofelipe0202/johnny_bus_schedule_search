@@ -1,21 +1,70 @@
 const streets = document.querySelector('.streets');
+const info = document.querySelector('tbody'); 
 
 const getStreets = streetName => {
-  return new Promise((resolve, reject) => {
-  const streetRequest = new XMLHttpRequest();
- 
-streetRequest.addEventListener('readystatechange', () => {
-  if(streetRequest.readyState === 4 && streetRequest.status === 200) {
-    resolve(JSON.parse(streetRequest.responseText));
-    } else if (streetRequest.readyState === 4) {
-    reject('No street found');
-    }
-  })
- 
-streetRequest.open('GET', `https://api.winnipegtransit.com/v3/streets.json?api-key=cmZaYN5yrwwmepOUIVTd&name=${streetName}`);
-streetRequest.send();
-  });
+  return fetch(`https://api.winnipegtransit.com/v3/streets.json?api-key=cmZaYN5yrwwmepOUIVTd&name=${streetName}`)
+  .then(response => response.json())
 }
+
+const getBusStop = streetKey => {
+  return fetch(`https://api.winnipegtransit.com/v3/stops.json?api-key=cmZaYN5yrwwmepOUIVTd&street=${streetKey}`)
+  .then(response => response.json())
+}
+
+const getBuses = busStop => {
+  const allBuses = [];
+
+  busStop.forEach(stopKey => {
+    allBuses.push(fetch(`https://api.winnipegtransit.com/v3/stops/${stopKey}/schedule.json?api-key=cmZaYN5yrwwmepOUIVTd`))
+  })
+
+  console.log(allBuses);
+}
+
+const getStreetsData = streetName => {
+  getStreets(streetName).then(allStreetName => {
+    const streetKey = allStreetName.streets[0].key
+    console.log(streetKey);
+
+    return streetKey;
+  })
+}
+
+const getStopData = key => {
+  getBusStop(key).then(allStops => {
+    let allBusStop = [];
+
+    allStops.stops.forEach(stop => {
+      allBusStop.push(stop.key);
+    });
+    console.log(allBusStop)
+    return allBusStop;
+  })
+}
+
+//getStopData('2715')
+getBuses('10003')
+
+
+
+
+
+
+//getStreetsData('Kenaston');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const returnStreetName = streetName => {
   streetName.forEach(street => {
@@ -34,6 +83,6 @@ searchForm.addEventListener('submit', e => {
 
   getStreets(searchValue)
     .then(street => returnStreetName(street.streets));
+
   streets.innerHTML = '';
 })
- 
