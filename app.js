@@ -1,6 +1,6 @@
 const streets = document.querySelector('.streets');
 const info = document.querySelector('tbody'); 
-const titleBarName = document.querySelector('.titlebar');
+const streetTitleName = document.querySelector('#street-name');
 
 const getStreets = streetName => {
   return fetch(`https://api.winnipegtransit.com/v3/streets.json?api-key=cmZaYN5yrwwmepOUIVTd&name=${streetName}`)
@@ -38,7 +38,7 @@ const getBusStopInfo = streetKey => {
       Promise.all(allBusStopSchedule)
         .then(stopScheduleList => {
         showSchedules(stopScheduleList);
-        updateTitle(busStop);
+        updateBusStopTitle(busStop);
       });
     })
 }
@@ -54,13 +54,18 @@ const returnStreetName = streetNameList => {
   }
 }
 
+const updateBusStopTitle = busStop => {
+  if(busStop.stops[0] !== undefined) {
+    let busStopStreetName = busStop.stops[0].street.name;
+    streetTitleName.innerHTML = `Displaying results for ${busStopStreetName}`;
+  } else {
+    streetTitleName.innerHTML = 'No bus stops to that street name';
+  }
+}
+
 const nextBusTime = time => {
   const nextBus = new Date(time);
   return nextBus.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-}
-
-function formatTime(time) {
-  return new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
 const showSchedules = busScheduleList => {
@@ -91,6 +96,7 @@ searchForm.addEventListener('submit', e => {
 
   getStreets(searchValue)
     .then(street => returnStreetName(street.streets));
+  search.innerHTML = '';
   streets.innerHTML = '';
 })
 
